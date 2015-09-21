@@ -1165,6 +1165,46 @@ text_mondayB_bmp[] =
   B01010010,
   B11010010,
   B00000000
+},
+text_tuesdayA_bmp[] =
+{ B00000000,
+  B11111010,
+  B00100010,
+  B00100010,
+  B00100010,
+  B00100010,
+  B00100011,
+  B00000000
+},
+text_tuesdayB_bmp[] =
+{ B00000000,
+  B01011110,
+  B0101000,
+  B01011110,
+  B01010000,
+  B01010000,
+  B11011110,
+  B00000000
+},
+text_wednesdayA_bmp[] =
+{ B00000000,
+  B10001011,
+  B10001010,
+  B10001011,
+  B10101010,
+  B10101010,
+  B11111011,
+  B00000000
+},
+text_wednesdayB_bmp[] =
+{ B00000000,
+  B11011100,
+  B00010010,
+  B11010010,
+  B00010010,
+  B00010010,
+  B11011100,
+  B00000000
 };
 
 void setup()
@@ -1388,10 +1428,12 @@ void displayDay (int h)
       matrix4.drawBitmap(0, 0, text_mondayB_bmp, 8, 8, LED_ON);//GREEN);     
       break;
     case 3:
-      matrix1.drawBitmap(0, 0, hour_three_bmp, 8, 8, LED_ON);//GREEN);
+      matrix3.drawBitmap(0, 0, text_tuesdayA_bmp, 8, 8, LED_ON);//GREEN);
+      matrix4.drawBitmap(0, 0, text_tuesdayB_bmp, 8, 8, LED_ON);//GREEN); 
       break;
     case 4:
-      matrix1.drawBitmap(0, 0, hour_four_bmp, 8, 8, LED_ON);//GREEN);
+      matrix3.drawBitmap(0, 0, text_wednesdayA_bmp, 8, 8, LED_ON);//GREEN);
+      matrix4.drawBitmap(0, 0, text_wednesdayB_bmp, 8, 8, LED_ON);//GREEN); 
       break;
     case 5:
       matrix1.drawBitmap(0, 0, hour_five_bmp, 8, 8, LED_ON);//GREEN);
