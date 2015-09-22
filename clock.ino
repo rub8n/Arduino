@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <RTClib.h>
+#include <math.h>
 //#include <Time.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -20,7 +21,7 @@ const int thirdButtonPin = 5;
 const int speakerPin = 6;
 
 // Define temprature settings
-#define DHTPIN 14    
+#define DHTPIN 14
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -786,6 +787,106 @@ minute_sixtytwo_bmp[] =
   B01110111,
   B00000000
 },
+minute_sixtythree_bmp[] =
+{ B00000000,
+  B01000111,
+  B01000001,
+  B01000111,
+  B01110001,
+  B01010001,
+  B01110111,
+  B00000000
+},
+minute_sixtyfour_bmp[] =
+{ B00000000,
+  B01000101,
+  B01000101,
+  B01000111,
+  B01110001,
+  B01010001,
+  B01110001,
+  B00000000
+},
+minute_sixtyfive_bmp[] =
+{ B00000000,
+  B01000111,
+  B01000100,
+  B01000111,
+  B01110001,
+  B01010001,
+  B01110111,
+  B00000000
+},
+minute_sixtysix_bmp[] =
+{ B00000000,
+  B01000100,
+  B01000100,
+  B01000111,
+  B01110101,
+  B01010101,
+  B01110111,
+  B00000000
+},
+minute_sixtyseven_bmp[] =
+{ B00000000,
+  B01000111,
+  B01000001,
+  B01000001,
+  B01110001,
+  B01010001,
+  B01110001,
+  B00000000
+},
+minute_sixtyeight_bmp[] =
+{ B00000000,
+  B01000111,
+  B01000101,
+  B01000111,
+  B01110101,
+  B01010101,
+  B01110111,
+  B00000000
+},
+minute_sixtynine_bmp[] =
+{ B00000000,
+  B01000111,
+  B01000101,
+  B01000111,
+  B01110001,
+  B01010001,
+  B01110001,
+  B00000000
+},
+minute_seventy_bmp[] =
+{ B00000000,
+  B01110111,
+  B00010101,
+  B00010101,
+  B00010101,
+  B00010101,
+  B00010111,
+  B00000000
+},
+minute_seventyone_bmp[] =
+{ B00000000,
+  B01110010,
+  B00010010,
+  B00010010,
+  B00010010,
+  B00010010,
+  B00010010,
+  B00000000
+},
+minute_seventytwo_bmp[] =
+{ B00000000,
+  B01110111,
+  B00010001,
+  B00010111,
+  B00010100,
+  B00010100,
+  B00010111,
+  B00000000
+},
 minute_seventythree_bmp[] =
 { B00000000,
   B01110111,
@@ -1265,6 +1366,16 @@ text_saturdayB_bmp[] =
   B01000100,
   B01000100,
   B00000000
+},
+degrees_bmp[] =
+{ B00000000,
+  B11101110,
+  B10101000,
+  B11101110,
+  B00001000,
+  B00001000,
+  B00001000,
+  B00000000
 };
 
 void setup()
@@ -1283,8 +1394,8 @@ void setup()
   dht.begin();
 
   Serial.println("DHTxx test!");
-  
-  if (! rtc.isrunning())
+
+  if(true)//if (! rtc.isrunning())
   {
     // This sets the RTC to the date and time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -1305,9 +1416,9 @@ void setup()
   pinMode(firstButtonPin, INPUT);
   pinMode(secondButtonPin, INPUT);
   pinMode(thirdButtonPin, INPUT);
-  digitalWrite(secondButtonPin, HIGH); 
+  digitalWrite(secondButtonPin, HIGH);
   digitalWrite(thirdButtonPin, HIGH);
-  
+
   // Setup speaker
   pinMode(speakerPin, OUTPUT);
 
@@ -1400,12 +1511,13 @@ void setup()
 
 void loop()
 {
-  
+
   // Check for button press
   secondButtonState = digitalRead(secondButtonPin);
 
-  if (secondButtonState == HIGH){
+  if (secondButtonState == HIGH) {
     displayTemp();
+    Serial.println("Displaying temp...");
   }
   else {
     displayTime();
@@ -1413,34 +1525,34 @@ void loop()
 
 }
 
-void displayTime(){
+void displayTime() {
 
   // Check for button press
   firstButtonState = digitalRead(firstButtonPin);
 
   if (firstButtonState == HIGH)
     shootInvader();
- 
-    // Update time
-    now = rtc.now();
-  
-    // Display time
-    displayHour(now.hour());
-    displayDigits(now.minute(),2);
-  
-    // Update invader every hour
-    if (now.minute() == 0 && now.second() == 0)
-      currentInvader = cycleInvader(currentInvader);
-  
-    // Display invader
-    //displayInvader(currentInvader, now.second());
-    sec = sec + 1;
-    displayInvader(currentInvader, sec);
-  
-    delay(1000);
+
+  // Update time
+  now = rtc.now();
+
+  // Display time
+  displayHour(now.hour());
+  displayDigits(now.minute(), 2);
+
+  // Update invader every hour
+  if (now.minute() == 0 && now.second() == 0)
+    currentInvader = cycleInvader(currentInvader);
+
+  // Display invader
+  //displayInvader(currentInvader, now.second());
+  sec = sec + 1;
+  displayInvader(currentInvader, sec);
+
+  delay(1000);
 }
 
-void displayTemp(){
+void displayTemp() {
 
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -1464,15 +1576,16 @@ void displayTemp(){
   Serial.println(" *F\t");
 
   displayDay(now.day());
-  displayDigits((int)f,3);
+  displayDigits(round(f), 3);
+  displayDigits(999, 4);
 
-  delay(2000);
-  
+  delay(3000);
+
 }
 
 void displayDay (int h)
 {
-  
+
   matrix1.clear();
   matrix2.clear();
 
@@ -1480,36 +1593,36 @@ void displayDay (int h)
   {
     case 1:
       matrix1.drawBitmap(0, 0, text_sundayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_sundayB_bmp, 8, 8, LED_ON);//GREEN);      
+      matrix2.drawBitmap(0, 0, text_sundayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 2:
       matrix1.drawBitmap(0, 0, text_mondayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_mondayB_bmp, 8, 8, LED_ON);//GREEN);     
+      matrix2.drawBitmap(0, 0, text_mondayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 3:
       matrix1.drawBitmap(0, 0, text_tuesdayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_tuesdayB_bmp, 8, 8, LED_ON);//GREEN); 
+      matrix2.drawBitmap(0, 0, text_tuesdayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 4:
       matrix1.drawBitmap(0, 0, text_wednesdayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_wednesdayB_bmp, 8, 8, LED_ON);//GREEN); 
+      matrix2.drawBitmap(0, 0, text_wednesdayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 5:
       matrix1.drawBitmap(0, 0, text_thursdayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_thursdayB_bmp, 8, 8, LED_ON);//GREEN); 
+      matrix2.drawBitmap(0, 0, text_thursdayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 6:
       matrix1.drawBitmap(0, 0, text_fridayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_fridayB_bmp, 8, 8, LED_ON);//GREEN); 
+      matrix2.drawBitmap(0, 0, text_fridayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
     case 7:
       matrix1.drawBitmap(0, 0, text_saturdayA_bmp, 8, 8, LED_ON);//GREEN);
-      matrix2.drawBitmap(0, 0, text_saturdayB_bmp, 8, 8, LED_ON);//GREEN); 
+      matrix2.drawBitmap(0, 0, text_saturdayB_bmp, 8, 8, LED_ON);//GREEN);
       break;
   }
 
-  matrix3.writeDisplay();
-  matrix4.writeDisplay();
+  matrix1.writeDisplay();
+  matrix2.writeDisplay();
 }
 
 
@@ -1562,32 +1675,36 @@ void displayHour (int h)
 
 void displayDigits (int d, int m)
 {
-  
-  const uint8_t* bmp = getDigitBMP(d);  
+
+  const uint8_t* bmp = getDigitBMP(d);
 
   switch (m)
   {
     case 1:
       matrix1.clear();
       matrix1.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
+      matrix1.writeDisplay();
       break;
     case 2:
       matrix2.clear();
       matrix2.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
+      matrix2.writeDisplay();
       break;
     case 3:
       matrix3.clear();
       matrix3.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
+      matrix3.writeDisplay();
       break;
     case 4:
       matrix4.clear();
       matrix4.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
-      break;  
+      matrix4.writeDisplay();
+      break;
   }
 
 }
 
-const uint8_t* getDigitBMP(int d){
+const uint8_t* getDigitBMP(int d) {
 
   switch (d)
   {
@@ -1779,44 +1896,77 @@ const uint8_t* getDigitBMP(int d){
       break;
     case 62:
       return minute_sixtytwo_bmp;
-      break;  
+      break;
+    case 63:
+      return minute_sixtythree_bmp;
+      break;
+    case 64:
+      return minute_sixtyfour_bmp;
+      break;
+    case 65:
+      return minute_sixtyfive_bmp;
+      break;
+    case 66:
+      return minute_sixtysix_bmp;
+      break;
+    case 67:
+      return minute_sixtyseven_bmp;
+      break;
+    case 68:
+      return minute_sixtyeight_bmp;
+      break;
+    case 69:
+      return minute_sixtynine_bmp;
+      break;
+    case 70:
+      return minute_seventy_bmp;
+      break;
+    case 71:
+      return minute_seventyone_bmp;
+      break;
+    case 72:
+      return minute_seventytwo_bmp;
+      break;                                        
     case 73:
       return minute_seventythree_bmp;
-      break;  
+      break;
     case 74:
       return minute_seventyfour_bmp;
-      break;  
+      break;
     case 75:
       return minute_seventyfive_bmp;
-      break;  
+      break;
     case 76:
       return minute_seventysix_bmp;
-      break;  
+      break;
     case 77:
       return minute_seventyseven_bmp;
       break;
     case 78:
       return minute_seventyeight_bmp;
-      break;  
+      break;
     case 79:
       return minute_seventynine_bmp;
-      break;  
+      break;
     case 80:
       return minute_eighty_bmp;
-      break; 
+      break;
     case 81:
       return minute_eightyone_bmp;
-      break; 
+      break;
     case 82:
       return minute_eightytwo_bmp;
-      break; 
+      break;
     case 83:
       return minute_eightythree_bmp;
-      break;  
+      break;
     case 84:
       return minute_eightyfour_bmp;
-      break;       
-    }
+      break;
+    case 999:
+      return degrees_bmp;
+      break;
+  }
 
 }
 
