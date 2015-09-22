@@ -1,7 +1,9 @@
 #include <Wire.h>
 #include <RTClib.h>
 #include <math.h>
+//#include <DateTime.h>
 //#include <Time.h>
+//#include <DateTimeStrings.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include "DHT.h"
@@ -1516,8 +1518,8 @@ void loop()
   secondButtonState = digitalRead(secondButtonPin);
 
   if (secondButtonState == HIGH) {
-    displayTemp();
     Serial.println("Displaying temp...");
+    displayTemp();
   }
   else {
     displayTime();
@@ -1566,7 +1568,7 @@ void displayTemp() {
     return;
   }
   Serial.print("Day: ");
-  Serial.print(now.day());
+  Serial.print(now.dayOfWeek());
   Serial.print(" %\t");
   Serial.print("Humidity: ");
   Serial.print(h);
@@ -1575,7 +1577,7 @@ void displayTemp() {
   Serial.print(f);
   Serial.println(" *F\t");
 
-  displayDay(now.day());
+  displayDay(now.dayOfWeek());
   displayDigits(round(f), 3);
   displayDigits(999, 4);
 
