@@ -1341,7 +1341,6 @@ void setup()
 void loop()
 {
   
-  
   // Check for button press
   secondButtonState = digitalRead(secondButtonPin);
 
@@ -1367,7 +1366,7 @@ void displayTime(){
   
     // Display time
     displayHour(now.hour());
-    displayMinute(now.minute());
+    displayDigits(now.minute(),2);
   
     // Update invader every hour
     if (now.minute() == 0 && now.second() == 0)
@@ -1405,7 +1404,7 @@ void displayTemp(){
   Serial.println(" *F\t");
 
   displayDay(now.day());
-  displayMinute((int)f);
+  displayDigits((int)f,3);
 
   delay(2000);
   
@@ -1498,243 +1497,265 @@ void displayHour (int h)
   matrix1.writeDisplay();
 }
 
-
-void displayMinute (int m)
+void displayDigits (int d, int m)
 {
-  matrix2.clear();
+  
+  const uint8_t* bmp = getDigitBMP(d);  
 
   switch (m)
   {
-    case 0:
-      matrix2.drawBitmap(0, 0, minute_zero_bmp, 8, 8, LED_ON);//GREEN);
-      break;
     case 1:
-      matrix2.drawBitmap(0, 0, minute_one_bmp, 8, 8, LED_ON);//GREEN);
+      matrix1.clear();
+      matrix1.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
       break;
     case 2:
-      matrix2.drawBitmap(0, 0, minute_two_bmp, 8, 8, LED_ON);//GREEN);
+      matrix2.clear();
+      matrix2.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
       break;
     case 3:
-      matrix2.drawBitmap(0, 0, minute_three_bmp, 8, 8, LED_ON);//GREEN);
+      matrix3.clear();
+      matrix3.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
       break;
     case 4:
-      matrix2.drawBitmap(0, 0, minute_four_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 5:
-      matrix2.drawBitmap(0, 0, minute_five_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 6:
-      matrix2.drawBitmap(0, 0, minute_six_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 7:
-      matrix2.drawBitmap(0, 0, minute_seven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 8:
-      matrix2.drawBitmap(0, 0, minute_eight_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 9:
-      matrix2.drawBitmap(0, 0, minute_nine_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 10:
-      matrix2.drawBitmap(0, 0, minute_ten_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 11:
-      matrix2.drawBitmap(0, 0, minute_eleven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 12:
-      matrix2.drawBitmap(0, 0, minute_twelve_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 13:
-      matrix2.drawBitmap(0, 0, minute_thirteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 14:
-      matrix2.drawBitmap(0, 0, minute_fourteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 15:
-      matrix2.drawBitmap(0, 0, minute_fifteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 16:
-      matrix2.drawBitmap(0, 0, minute_sixteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 17:
-      matrix2.drawBitmap(0, 0, minute_seventeen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 18:
-      matrix2.drawBitmap(0, 0, minute_eighteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 19:
-      matrix2.drawBitmap(0, 0, minute_nineteen_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 20:
-      matrix2.drawBitmap(0, 0, minute_twenty_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 21:
-      matrix2.drawBitmap(0, 0, minute_twentyone_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 22:
-      matrix2.drawBitmap(0, 0, minute_twentytwo_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 23:
-      matrix2.drawBitmap(0, 0, minute_twentythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 24:
-      matrix2.drawBitmap(0, 0, minute_twentyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 25:
-      matrix2.drawBitmap(0, 0, minute_twentyfive_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 26:
-      matrix2.drawBitmap(0, 0, minute_twentysix_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 27:
-      matrix2.drawBitmap(0, 0, minute_twentyseven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 28:
-      matrix2.drawBitmap(0, 0, minute_twentyeight_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 29:
-      matrix2.drawBitmap(0, 0, minute_twentynine_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 30:
-      matrix2.drawBitmap(0, 0, minute_thirty_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 31:
-      matrix2.drawBitmap(0, 0, minute_thirtyone_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 32:
-      matrix2.drawBitmap(0, 0, minute_thirtytwo_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 33:
-      matrix2.drawBitmap(0, 0, minute_thirtythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 34:
-      matrix2.drawBitmap(0, 0, minute_thirtyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 35:
-      matrix2.drawBitmap(0, 0, minute_thirtyfive_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 36:
-      matrix2.drawBitmap(0, 0, minute_thirtysix_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 37:
-      matrix2.drawBitmap(0, 0, minute_thirtyseven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 38:
-      matrix2.drawBitmap(0, 0, minute_thirtyeight_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 39:
-      matrix2.drawBitmap(0, 0, minute_thirtynine_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 40:
-      matrix2.drawBitmap(0, 0, minute_forty_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 41:
-      matrix2.drawBitmap(0, 0, minute_fortyone_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 42:
-      matrix2.drawBitmap(0, 0, minute_fortytwo_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 43:
-      matrix2.drawBitmap(0, 0, minute_fortythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 44:
-      matrix2.drawBitmap(0, 0, minute_fortyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 45:
-      matrix2.drawBitmap(0, 0, minute_fortyfive_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 46:
-      matrix2.drawBitmap(0, 0, minute_fortysix_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 47:
-      matrix2.drawBitmap(0, 0, minute_fortyseven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 48:
-      matrix2.drawBitmap(0, 0, minute_fortyeight_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 49:
-      matrix2.drawBitmap(0, 0, minute_fortynine_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 50:
-      matrix2.drawBitmap(0, 0, minute_fifty_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 51:
-      matrix2.drawBitmap(0, 0, minute_fiftyone_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 52:
-      matrix2.drawBitmap(0, 0, minute_fiftytwo_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 53:
-      matrix2.drawBitmap(0, 0, minute_fiftythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 54:
-      matrix2.drawBitmap(0, 0, minute_fiftyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 55:
-      matrix2.drawBitmap(0, 0, minute_fiftyfive_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 56:
-      matrix2.drawBitmap(0, 0, minute_fiftysix_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 57:
-      matrix2.drawBitmap(0, 0, minute_fiftyseven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 58:
-      matrix2.drawBitmap(0, 0, minute_fiftyeight_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 59:
-      matrix2.drawBitmap(0, 0, minute_fiftynine_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 60:
-      matrix2.drawBitmap(0, 0, minute_sixty_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 61:
-      matrix2.drawBitmap(0, 0, minute_sixtyone_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 62:
-      matrix2.drawBitmap(0, 0, minute_sixtytwo_bmp, 8, 8, LED_ON);//GREEN);
+      matrix4.clear();
+      matrix4.drawBitmap(0, 0, bmp, 8, 8, LED_ON);
       break;  
-    case 73:
-      matrix2.drawBitmap(0, 0, minute_seventythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 74:
-      matrix2.drawBitmap(0, 0, minute_seventyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 75:
-      matrix2.drawBitmap(0, 0, minute_seventyfive_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 76:
-      matrix2.drawBitmap(0, 0, minute_seventysix_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 77:
-      matrix2.drawBitmap(0, 0, minute_seventyseven_bmp, 8, 8, LED_ON);//GREEN);
-      break;
-    case 78:
-      matrix2.drawBitmap(0, 0, minute_seventyeight_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 79:
-      matrix2.drawBitmap(0, 0, minute_seventynine_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 80:
-      matrix2.drawBitmap(0, 0, minute_eighty_bmp, 8, 8, LED_ON);//GREEN);
-      break; 
-    case 81:
-      matrix2.drawBitmap(0, 0, minute_eightyone_bmp, 8, 8, LED_ON);//GREEN);
-      break; 
-    case 82:
-      matrix2.drawBitmap(0, 0, minute_eightytwo_bmp, 8, 8, LED_ON);//GREEN);
-      break; 
-    case 83:
-      matrix2.drawBitmap(0, 0, minute_eightythree_bmp, 8, 8, LED_ON);//GREEN);
-      break;  
-    case 84:
-      matrix2.drawBitmap(0, 0, minute_eightyfour_bmp, 8, 8, LED_ON);//GREEN);
-      break;                                                                         
   }
 
-  matrix2.writeDisplay();
 }
 
+const uint8_t* getDigitBMP(int d){
+
+  switch (d)
+  {
+    case 0:
+      return minute_zero_bmp;
+      break;
+    case 1:
+      return minute_one_bmp;
+      break;
+    case 2:
+      return minute_two_bmp;
+      break;
+    case 3:
+      return minute_three_bmp;
+      break;
+    case 4:
+      return minute_four_bmp;
+      break;
+    case 5:
+      return minute_five_bmp;
+      break;
+    case 6:
+      return minute_six_bmp;
+      break;
+    case 7:
+      return minute_seven_bmp;
+      break;
+    case 8:
+      return minute_eight_bmp;
+      break;
+    case 9:
+      return minute_nine_bmp;
+      break;
+    case 10:
+      return minute_ten_bmp;
+      break;
+    case 11:
+      return minute_eleven_bmp;
+      break;
+    case 12:
+      return minute_twelve_bmp;
+      break;
+    case 13:
+      return minute_thirteen_bmp;
+      break;
+    case 14:
+      return minute_fourteen_bmp;
+      break;
+    case 15:
+      return minute_fifteen_bmp;
+      break;
+    case 16:
+      return minute_sixteen_bmp;
+      break;
+    case 17:
+      return minute_seventeen_bmp;
+      break;
+    case 18:
+      return minute_eighteen_bmp;
+      break;
+    case 19:
+      return minute_nineteen_bmp;
+      break;
+    case 20:
+      return minute_twenty_bmp;
+      break;
+    case 21:
+      return minute_twentyone_bmp;
+      break;
+    case 22:
+      return minute_twentytwo_bmp;
+      break;
+    case 23:
+      return minute_twentythree_bmp;
+      break;
+    case 24:
+      return minute_twentyfour_bmp;
+      break;
+    case 25:
+      return minute_twentyfive_bmp;
+      break;
+    case 26:
+      return minute_twentysix_bmp;
+      break;
+    case 27:
+      return minute_twentyseven_bmp;
+      break;
+    case 28:
+      return minute_twentyeight_bmp;
+      break;
+    case 29:
+      return minute_twentynine_bmp;
+      break;
+    case 30:
+      return minute_thirty_bmp;
+      break;
+    case 31:
+      return minute_thirtyone_bmp;
+      break;
+    case 32:
+      return minute_thirtytwo_bmp;
+      break;
+    case 33:
+      return minute_thirtythree_bmp;
+      break;
+    case 34:
+      return minute_thirtyfour_bmp;
+      break;
+    case 35:
+      return minute_thirtyfive_bmp;
+      break;
+    case 36:
+      return minute_thirtysix_bmp;
+      break;
+    case 37:
+      return minute_thirtyseven_bmp;
+      break;
+    case 38:
+      return minute_thirtyeight_bmp;
+      break;
+    case 39:
+      return minute_thirtynine_bmp;
+      break;
+    case 40:
+      return minute_forty_bmp;
+      break;
+    case 41:
+      return minute_fortyone_bmp;
+      break;
+    case 42:
+      return minute_fortytwo_bmp;
+      break;
+    case 43:
+      return minute_fortythree_bmp;
+      break;
+    case 44:
+      return minute_fortyfour_bmp;
+      break;
+    case 45:
+      return minute_fortyfive_bmp;
+      break;
+    case 46:
+      return minute_fortysix_bmp;
+      break;
+    case 47:
+      return minute_fortyseven_bmp;
+      break;
+    case 48:
+      return minute_fortyeight_bmp;
+      break;
+    case 49:
+      return minute_fortynine_bmp;
+      break;
+    case 50:
+      return minute_fifty_bmp;
+      break;
+    case 51:
+      return minute_fiftyone_bmp;
+      break;
+    case 52:
+      return minute_fiftytwo_bmp;
+      break;
+    case 53:
+      return minute_fiftythree_bmp;
+      break;
+    case 54:
+      return minute_fiftyfour_bmp;
+      break;
+    case 55:
+      return minute_fiftyfive_bmp;
+      break;
+    case 56:
+      return minute_fiftysix_bmp;
+      break;
+    case 57:
+      return minute_fiftyseven_bmp;
+      break;
+    case 58:
+      return minute_fiftyeight_bmp;
+      break;
+    case 59:
+      return minute_fiftynine_bmp;
+      break;
+    case 60:
+      return minute_sixty_bmp;
+      break;
+    case 61:
+      return minute_sixtyone_bmp;
+      break;
+    case 62:
+      return minute_sixtytwo_bmp;
+      break;  
+    case 73:
+      return minute_seventythree_bmp;
+      break;  
+    case 74:
+      return minute_seventyfour_bmp;
+      break;  
+    case 75:
+      return minute_seventyfive_bmp;
+      break;  
+    case 76:
+      return minute_seventysix_bmp;
+      break;  
+    case 77:
+      return minute_seventyseven_bmp;
+      break;
+    case 78:
+      return minute_seventyeight_bmp;
+      break;  
+    case 79:
+      return minute_seventynine_bmp;
+      break;  
+    case 80:
+      return minute_eighty_bmp;
+      break; 
+    case 81:
+      return minute_eightyone_bmp;
+      break; 
+    case 82:
+      return minute_eightytwo_bmp;
+      break; 
+    case 83:
+      return minute_eightythree_bmp;
+      break;  
+    case 84:
+      return minute_eightyfour_bmp;
+      break;       
+    }
+
+}
 
 int cycleInvader (int i)
 {
