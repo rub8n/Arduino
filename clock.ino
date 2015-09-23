@@ -20,7 +20,7 @@ Adafruit_8x8matrix matrix4 = Adafruit_8x8matrix();
 const int firstButtonPin = 4;
 const int secondButtonPin = 3;
 const int thirdButtonPin = 5;
-const int speakerPin = 6;
+const int speakerPin = 9;
 
 // Define temprature settings
 #define DHTPIN 14
