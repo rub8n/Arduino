@@ -1,22 +1,17 @@
 #include <Wire.h>
 #include <RTClib.h>
-#include <math.h>
-//#include <DateTime.h>
-//#include <Time.h>
-//#include <DateTimeStrings.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include "DHT.h"
 
 // Declare I2C objects
-//
 RTC_DS1307 rtc;
 Adafruit_8x8matrix matrix1 = Adafruit_8x8matrix();
 Adafruit_8x8matrix matrix2 = Adafruit_8x8matrix();
 Adafruit_8x8matrix matrix3 = Adafruit_8x8matrix();
 Adafruit_8x8matrix matrix4 = Adafruit_8x8matrix();
 
-// Initialize DHT sensor
+// Define pins
 const int firstButtonPin = 4;
 const int secondButtonPin = 3;
 const int thirdButtonPin = 5;
@@ -34,7 +29,7 @@ DateTime now;
 int currentInvader = 1;
 int firstButtonState = 0;
 int secondButtonState = 0;
-
+int thirdButtonState = 0;
 int sec = 0;
 
 // Store bitmaps
@@ -1009,86 +1004,6 @@ minute_eightyfour_bmp[] =
   B01110001,
   B00000000
 },
-text_pressA_bmp[] =
-{ B00000000,
-  B00000011,
-  B00000010,
-  B00000010,
-  B01110011,
-  B00000010,
-  B00000010,
-  B00000000
-},
-text_pressB_bmp[] =
-{ B00000000,
-  B10111011,
-  B10101010,
-  B10101010,
-  B10101011,
-  B00110010,
-  B00101011,
-  B00000000
-},
-text_pressC_bmp[] =
-{ B00000000,
-  B10111011,
-  B00100010,
-  B00100010,
-  B10111011,
-  B00001000,
-  B10111011,
-  B00000000
-},
-text_pressD_bmp[] =
-{ B00000000,
-  B10000000,
-  B00000000,
-  B00000000,
-  B10011100,
-  B10000000,
-  B10000000,
-  B00000000
-},
-text_startA_bmp[] =
-{ B00000000,
-  B00000011,
-  B00000010,
-  B00000010,
-  B01110011,
-  B00000000,
-  B00000011,
-  B00000000
-},
-text_startB_bmp[] =
-{ B00000000,
-  B10111011,
-  B00010010,
-  B00010010,
-  B10010011,
-  B10010010,
-  B10010010,
-  B00000000
-},
-text_startC_bmp[] =
-{ B00000000,
-  B10111011,
-  B10101001,
-  B10101001,
-  B10101001,
-  B10110001,
-  B10101001,
-  B00000000
-},
-text_startD_bmp[] =
-{ B00000000,
-  B10000000,
-  B00000000,
-  B00000000,
-  B00011100,
-  B00000000,
-  B00000000,
-  B00000000
-},
 invader_1AA_bmp[] =
 { B00000001,
   B00000011,
@@ -1395,8 +1310,6 @@ void setup()
   rtc.begin();
   dht.begin();
 
-  Serial.println("DHTxx test!");
-
   if(true)//if (! rtc.isrunning())
   {
     // This sets the RTC to the date and time this sketch was compiled
@@ -1424,90 +1337,6 @@ void setup()
   // Setup speaker
   pinMode(speakerPin, OUTPUT);
 
-
-  // Splash screen
-  firstButtonState = digitalRead(firstButtonPin);
-  secondButtonState = digitalRead(secondButtonPin);
-
-  while (!firstButtonState)
-  {
-    matrix1.clear();
-    matrix2.clear();
-    matrix3.clear();
-    matrix4.clear();
-
-    matrix1.drawBitmap(0, 0, text_pressA_bmp, 8, 8, LED_ON);//RED);
-    matrix2.drawBitmap(0, 0, text_pressB_bmp, 8, 8, LED_ON);//RED);
-    matrix3.drawBitmap(0, 0, text_pressC_bmp, 8, 8, LED_ON);//RED);
-    matrix4.drawBitmap(0, 0, text_pressD_bmp, 8, 8, LED_ON);//RED);
-
-    matrix1.writeDisplay();
-    matrix2.writeDisplay();
-    matrix3.writeDisplay();
-    matrix4.writeDisplay();
-
-    tone(speakerPin, 139, 600);
-
-    delay(600);
-
-    firstButtonState = digitalRead(firstButtonPin);
-
-    if (firstButtonState == HIGH)
-      break;
-
-    tone(speakerPin, 123, 600);
-
-    delay(600);
-
-    firstButtonState = digitalRead(firstButtonPin);
-
-    if (firstButtonState == HIGH)
-      break;
-
-    matrix1.clear();
-    matrix2.clear();
-    matrix3.clear();
-    matrix4.clear();
-
-    matrix1.drawBitmap(0, 0, text_startA_bmp, 8, 8, LED_ON);//RED);
-    matrix2.drawBitmap(0, 0, text_startB_bmp, 8, 8, LED_ON);//RED);
-    matrix3.drawBitmap(0, 0, text_startC_bmp, 8, 8, LED_ON);//RED);
-    matrix4.drawBitmap(0, 0, text_startD_bmp, 8, 8, LED_ON);//RED);
-
-    matrix1.writeDisplay();
-    matrix2.writeDisplay();
-    matrix3.writeDisplay();
-    matrix4.writeDisplay();
-
-    tone(speakerPin, 110, 600);
-
-    delay(800);
-
-    firstButtonState = digitalRead(firstButtonPin);
-
-    if (firstButtonState == HIGH)
-      break;
-
-    tone(speakerPin, 104, 600);
-
-    delay(800);
-
-    firstButtonState = digitalRead(firstButtonPin);
-  }
-
-  matrix1.clear();
-  matrix2.clear();
-  matrix3.clear();
-  matrix4.clear();
-
-  matrix1.writeDisplay();
-  matrix2.writeDisplay();
-  matrix3.writeDisplay();
-  matrix4.writeDisplay();
-
-  Serial.println("leaving setup");
-
-  delay(1000);
 }
 
 
