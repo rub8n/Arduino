@@ -12,13 +12,13 @@ Adafruit_8x8matrix matrix3 = Adafruit_8x8matrix();
 Adafruit_8x8matrix matrix4 = Adafruit_8x8matrix();
 
 // Define pins
-const int firstButtonPin = 4;
-const int secondButtonPin = 3;
-const int thirdButtonPin = 5;
+const int firstButtonPin = 21;
+const int secondButtonPin = 20;
+const int thirdButtonPin = 19;
 const int speakerPin = 9;
 
 // Define temprature settings
-#define DHTPIN 14
+#define DHTPIN 4
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -727,10 +727,10 @@ minute_fiftysix_bmp[] =
 minute_fiftyseven_bmp[] =
 { B00000000,
   B01110111,
-  B01010001,
-  B01010001,
-  B01010001,
-  B01010001,
+  B01000001,
+  B01000001,
+  B01110001,
+  B00010001,
   B01110001,
   B00000000
 },
@@ -1002,6 +1002,66 @@ minute_eightyfour_bmp[] =
   B01010001,
   B01010001,
   B01110001,
+  B00000000
+},
+minute_eightyfive_bmp[] =
+{ B00000000,
+  B01110111,
+  B01010100,
+  B01110100,
+  B01010111,
+  B01010001,
+  B01110111,
+  B00000000
+},
+minute_eightysix_bmp[] =
+{ B00000000,
+  B01110100,
+  B01010100,
+  B01110100,
+  B01010111,
+  B01010101,
+  B01110111,
+  B00000000
+},
+minute_eightyseven_bmp[] =
+{ B00000000,
+  B01110111,
+  B01010001,
+  B01110001,
+  B01010001,
+  B01010001,
+  B01110001,
+  B00000000
+},
+minute_eightyeight_bmp[] =
+{ B00000000,
+  B01110111,
+  B01010101,
+  B01110111,
+  B01010101,
+  B01010101,
+  B01110111,
+  B00000000
+},
+minute_eightynine_bmp[] =
+{ B00000000,
+  B01110111,
+  B01010101,
+  B01110111,
+  B01010001,
+  B01010001,
+  B01110001,
+  B00000000
+},
+minute_ninety_bmp[] =
+{ B00000000,
+  B01110111,
+  B01010101,
+  B01110101,
+  B00010101,
+  B00010101,
+  B00010111,
   B00000000
 },
 invader_1AA_bmp[] =
@@ -1286,12 +1346,12 @@ text_saturdayB_bmp[] =
 },
 degrees_bmp[] =
 { B00000000,
-  B11101110,
-  B10101000,
-  B11101110,
-  B00001000,
-  B00001000,
-  B00001000,
+  B01110111,
+  B01010100,
+  B01110111,
+  B00000100,
+  B00000100,
+  B00000100,
   B00000000
 };
 
@@ -1345,10 +1405,15 @@ void loop()
 
   // Check for button press
   secondButtonState = digitalRead(secondButtonPin);
+  thirdButtonState = digitalRead(thirdButtonPin);  
 
   if (secondButtonState == HIGH) {
-    Serial.println("Displaying temp...");
+    Serial.println("Second button");
     displayTemp();
+  }
+  else if (thirdButtonState == HIGH) {
+    Serial.println("Third button");
+    shootInvader();
   }
   else {
     displayTime();
@@ -1398,7 +1463,7 @@ void displayTemp() {
   }
   Serial.print("Day: ");
   Serial.print(now.dayOfWeek());
-  Serial.print(" %\t");
+  Serial.print(" \t");
   Serial.print("Humidity: ");
   Serial.print(h);
   Serial.print(" %\t");
@@ -1406,7 +1471,7 @@ void displayTemp() {
   Serial.print(f);
   Serial.println(" *F\t");
 
-  displayDay(now.dayOfWeek());
+  displayDay(now.dayOfWeek()+1);
   displayDigits(round(f), 3);
   displayDigits(999, 4);
 
@@ -1794,6 +1859,24 @@ const uint8_t* getDigitBMP(int d) {
     case 84:
       return minute_eightyfour_bmp;
       break;
+    case 85:
+      return minute_eightyfive_bmp;
+      break;
+    case 86:
+      return minute_eightysix_bmp;
+      break;
+    case 87:
+      return minute_eightyseven_bmp;
+      break;
+    case 88:
+      return minute_eightyeight_bmp;
+      break;
+    case 89:
+      return minute_eightynine_bmp;
+      break;
+    case 90:
+      return minute_ninety_bmp;
+      break;                               
     case 999:
       return degrees_bmp;
       break;
