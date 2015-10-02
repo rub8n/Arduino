@@ -12,9 +12,9 @@ Adafruit_8x8matrix matrix3 = Adafruit_8x8matrix();
 Adafruit_8x8matrix matrix4 = Adafruit_8x8matrix();
 
 // Define pins
-const int firstButtonPin = 21;
-const int secondButtonPin = 20;
-const int thirdButtonPin = 19;
+const int firstButtonPin = A0;
+const int secondButtonPin = A2;
+const int thirdButtonPin = A1;
 const int speakerPin = 9;
 
 // Define temprature settings
@@ -1257,7 +1257,7 @@ text_tuesdayA_bmp[] =
 text_tuesdayB_bmp[] =
 { B00000000,
   B01011110,
-  B0101000,
+  B01010000,
   B01011110,
   B01010000,
   B01010000,
@@ -1344,6 +1344,66 @@ text_saturdayB_bmp[] =
   B01000100,
   B00000000
 },
+clockA_bmp[] =
+{ B00000000,
+  B00111100,
+  B01000010,
+  B01010010,
+  B01011010,
+  B01000010,
+  B00111100,
+  B00000000
+},
+clockB_bmp[] =
+{ B00111100,
+  B01000010,
+  B10000001,
+  B10011101,
+  B10010001,
+  B10010001,
+  B01000010,
+  B00111100
+},
+bell_bmp[] =
+{ B00000000,
+  B00001000,
+  B00011100,
+  B00011100,
+  B00111110,
+  B01111111,
+  B00001000,
+  B00000000
+},
+am_bmp[] =
+{ B00000000,
+  B01110101,
+  B01010111,
+  B01010101,
+  B01110101,
+  B01010101,
+  B01010101,
+  B00000000
+},
+pm_bmp[] =
+{ B00000000,
+  B01110101,
+  B01010111,
+  B01010101,
+  B01110101,
+  B01000101,
+  B01000101,
+  B00000000
+},
+blank_bmp[] =
+{ B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000
+},
 degrees_bmp[] =
 { B00000000,
   B01110111,
@@ -1391,6 +1451,7 @@ void setup()
   pinMode(firstButtonPin, INPUT);
   pinMode(secondButtonPin, INPUT);
   pinMode(thirdButtonPin, INPUT);
+  digitalWrite(firstButtonPin, HIGH);  
   digitalWrite(secondButtonPin, HIGH);
   digitalWrite(thirdButtonPin, HIGH);
 
@@ -1404,19 +1465,25 @@ void loop()
 {
 
   // Check for button press
+  firstButtonState = digitalRead(firstButtonPin);
   secondButtonState = digitalRead(secondButtonPin);
   thirdButtonState = digitalRead(thirdButtonPin);  
 
-  if (secondButtonState == HIGH) {
+  if (firstButtonState == HIGH) {
+    Serial.println("First button");
+    enterSetup();
+  }
+  else if (secondButtonState == HIGH) {
     Serial.println("Second button");
     displayTemp();
   }
   else if (thirdButtonState == HIGH) {
-    Serial.println("Third button");
+    Serial.println("Third button");   
     shootInvader();
   }
   else {
-    displayTime();
+    displayTime
+    ();
   }
 
 }
@@ -1446,6 +1513,163 @@ void displayTime() {
   displayInvader(currentInvader, sec);
 
   delay(1000);
+}
+
+void enterSetup() {
+
+  //1 time hour setup
+  //2 time minute setup
+  //3 alarm 1 (hour)
+  //4 alarm 1 (minute)
+  //5-8 date and alarm 2 setup and possibly radio (ignored for now)  
+  //future radio??
+  int setupStage = 1;
+  int hour = rtc.now().hour();
+  int minute = rtc.now().minute();  
+
+  while(setupStage <= 4){
+
+    firstButtonState = digitalRead(firstButtonPin);
+    secondButtonState = digitalRead(secondButtonPin);
+    thirdButtonState = digitalRead(thirdButtonPin);
+    
+    if (firstButtonState == HIGH) {
+      if(setupStage<=4){
+        setupStage++;
+      }
+      else{
+        break;
+      }
+    }else{
+  
+      if(setupStage == 1)
+      {
+              
+        displayHour(hour);
+        displayDigits(minute, 2); 
+        displayAMPM(hour);
+        displayDigits(710, 4);//display bell/alarm icon                 
+  
+        if (secondButtonState == HIGH) {
+          if(hour<24){
+            hour=hour+1;
+          }
+        }  
+        else if (thirdButtonState == HIGH) {
+          if(hour > 0){
+            hour=hour-1;
+          }
+        }
+        else if (firstButtonState == HIGH) {
+          setupStage=2;
+        }        
+        else{
+          blinkDigits(hour, 1);
+        }
+                       
+      }
+      else if(setupStage == 2)
+      {
+        displayHour(hour);
+        displayDigits(minute, 2); 
+        displayAMPM(hour);
+        displayDigits(710, 4);//display bell/alarm icon           
+  
+        if (secondButtonState == HIGH) {
+          if(minute<60){
+            minute=minute+1;
+          }
+        }  
+        else if (thirdButtonState == HIGH) {
+          if(minute > 0){
+            minute=minute-1;
+          }
+        }
+        else if (firstButtonState == HIGH) {
+          setupStage=3;
+        }        
+        else{
+          blinkDigits(minute, 2);
+        }             
+      }
+      else if(setupStage == 3)
+      {
+        displayHour(hour);
+        displayDigits(minute, 2); 
+        displayAMPM(hour);
+        displayDigits(700, 4);//display bell/alarm icon           
+        
+        if (secondButtonState == HIGH) {
+          if(hour<24){
+            hour=hour+1;
+          }
+        }  
+        else if (thirdButtonState == HIGH) {
+          if(hour > 0){
+            hour=hour-1;
+          }
+        }
+        else if (firstButtonState == HIGH) {
+          setupStage=4;
+        }         
+        else{
+          blinkDigits(hour, 1);
+        }            
+      }
+      else if(setupStage == 4)
+      {
+        displayHour(hour);
+        displayDigits(minute, 2); 
+        displayAMPM(hour);
+        displayDigits(700, 4);//display bell/alarm icon           
+  
+        if (secondButtonState == HIGH) {
+          if(minute<60){
+            minute=minute+1;
+          }
+        }  
+        else if (thirdButtonState == HIGH) {
+          if(minute > 0){
+            minute=minute-1;
+          }
+        }
+        else if (firstButtonState == HIGH) {
+          setupStage=5;
+          break;
+        }        
+        else{
+          blinkDigits(minute, 2);
+        }        
+      }        
+      
+    }
+
+  }
+  
+}
+
+void blinkDigits(int digits, int pos){
+  if(pos == 1){
+    displayDigits(888, 1);
+    delay(500);
+    displayHour(digits);    
+    delay(500);
+  }else{
+    displayDigits(888, pos);
+    delay(500);
+    displayDigits(digits, pos);
+    delay(500);
+  }
+
+}
+
+void displayAMPM(int h){ 
+  if(h < 12){
+   displayDigits(600, 3); //am
+  }
+  else{
+   displayDigits(620, 3); //pm
+  }
 }
 
 void displayTemp() {
@@ -1876,7 +2100,31 @@ const uint8_t* getDigitBMP(int d) {
       break;
     case 90:
       return minute_ninety_bmp;
-      break;                               
+      break;
+    case 600:
+      return am_bmp;
+      break; 
+    case 620:
+      return pm_bmp;
+      break;       
+    case 700:
+      return bell_bmp;
+      break; 
+    case 710:
+      return clockA_bmp;
+      break; 
+//    case 720:
+//      return alarmB_bmp;
+//      break;
+//    case 730:
+//      return alarmC_bmp;
+//      break; 
+//    case 740:
+//      return alarmD_bmp;
+//      break;                                                                  
+    case 888:
+      return blank_bmp;
+      break;                                     
     case 999:
       return degrees_bmp;
       break;
