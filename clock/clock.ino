@@ -16,6 +16,7 @@ const int firstButtonPin = A0;
 const int secondButtonPin = A2;
 const int thirdButtonPin = A1;
 const int speakerPin = 9;
+const int buttonsLedPin = 10;
 
 // Define temprature settings
 #define DHTPIN 4
@@ -1415,16 +1416,23 @@ degrees_bmp[] =
   B00000000
 };
 
+int clockMode = 0;
+int cHour=0;
+int cMinute=0;
+int alarmHour = 7;
+int alarmMinute = 30;
+int alarmMode = 1; //1 enabled only once, 7 enabled everyday
+
 void setup()
 {
 
   Serial.begin(9600);
 
   // Pass in I2C addresses
-  matrix4.begin(0x70);
-  matrix3.begin(0x74);
-  matrix2.begin(0x72);
-  matrix1.begin(0x71);
+  matrix1.begin(0x70);
+  matrix2.begin(0x74);
+  matrix3.begin(0x72);
+  matrix4.begin(0x71);
 
   // Setup time & temp
   rtc.begin();
@@ -1437,10 +1445,10 @@ void setup()
   }
 
   // Setup display
-  matrix1.setRotation(1);
-  matrix2.setRotation(1);
-  matrix3.setRotation(1);
-  matrix4.setRotation(1);
+  matrix1.setRotation(3);
+  matrix2.setRotation(3);
+  matrix3.setRotation(3);
+  matrix4.setRotation(3);
 
   matrix1.setBrightness(5);
   matrix2.setBrightness(5);
@@ -1448,12 +1456,17 @@ void setup()
   matrix4.setBrightness(5);
 
   // Setup buttons
+  pinMode(buttonsLedPin, OUTPUT);
   pinMode(firstButtonPin, INPUT);
   pinMode(secondButtonPin, INPUT);
   pinMode(thirdButtonPin, INPUT);
+  analogWrite(buttonsLedPin, 0);
   digitalWrite(firstButtonPin, HIGH);  
   digitalWrite(secondButtonPin, HIGH);
   digitalWrite(thirdButtonPin, HIGH);
+//  attachInterrupt(firstButtonPin, b1Press, FALLING);
+//  attachInterrupt(secondButtonPin, b2Press, FALLING);
+//  attachInterrupt(thirdButtonPin, b3Press, FALLING);  
 
   // Setup speaker
   pinMode(speakerPin, OUTPUT);
@@ -1488,6 +1501,78 @@ void loop()
 
 }
 
+void b1Press(){
+  //0 normal clock operation
+  //1 time hour setup
+  //2 time minute setup
+  //3 alarm 1 (hour)
+  //4 alarm 1 (minute)
+  //5-8 date and alarm 2 setup and possibly radio (ignored for now)  
+  //future radio??
+  Serial.println("b1 pressed...");
+  if(clockMode<=4){
+    clockMode++;
+  }
+  else{
+    clockMode=0;
+  }
+}
+
+void b2Press(){
+  Serial.println("b2 pressed...");
+  if(clockMode==0){
+    displayTemp();
+  }
+  else if(clockMode==1){
+    if(cHour<24){
+      cHour++;
+    }  
+  }
+  else if(clockMode==2){
+    if(cMinute<24){
+      cMinute++;
+    } 
+  }
+  else if(clockMode==3){
+    if(alarmHour<24){
+      alarmHour++;
+    } 
+  }
+  else if(clockMode==4){
+    if(alarmMinute<24){
+      alarmMinute++;
+    }
+  }  
+}
+
+void b3Press(){
+  Serial.println("b3 pressed...");
+  if(clockMode==0){
+    shootInvader();
+  }
+  else if(clockMode==1){
+    if(cHour > 0){
+      cHour--;
+    }   
+  }
+  else if(clockMode==2){
+    if(cMinute > 0){
+      cMinute--;
+    }  
+  }
+  else if(clockMode==3){
+    if(alarmHour > 0){
+      alarmHour--;
+    }  
+  }
+  else if(clockMode==4){
+    if(alarmMinute > 0){
+      alarmMinute--;
+    } 
+  }  
+}
+
+
 void displayTime() {
 
   // Check for button press
@@ -1517,135 +1602,45 @@ void displayTime() {
 
 void enterSetup() {
 
-  //1 time hour setup
-  //2 time minute setup
-  //3 alarm 1 (hour)
-  //4 alarm 1 (minute)
-  //5-8 date and alarm 2 setup and possibly radio (ignored for now)  
-  //future radio??
-  int setupStage = 1;
-  int hour = rtc.now().hour();
-  int minute = rtc.now().minute();  
+  cHour = rtc.now().hour();
+  cMinute = rtc.now().minute();
 
-  while(setupStage <= 4){
-
-    firstButtonState = digitalRead(firstButtonPin);
-    secondButtonState = digitalRead(secondButtonPin);
-    thirdButtonState = digitalRead(thirdButtonPin);
-    
-    if (firstButtonState == HIGH) {
-      if(setupStage<=4){
-        setupStage++;
-      }
-      else{
-        break;
-      }
-    }else{
+  while(clockMode > 0 && clockMode <=4)
+  {
   
-      if(setupStage == 1)
-      {
-              
-        displayHour(hour);
-        displayDigits(minute, 2); 
-        displayAMPM(hour);
-        displayDigits(710, 4);//display bell/alarm icon                 
-  
-        if (secondButtonState == HIGH) {
-          if(hour<24){
-            hour=hour+1;
-          }
-        }  
-        else if (thirdButtonState == HIGH) {
-          if(hour > 0){
-            hour=hour-1;
-          }
-        }
-        else if (firstButtonState == HIGH) {
-          setupStage=2;
-        }        
-        else{
-          blinkDigits(hour, 1);
-        }
-                       
-      }
-      else if(setupStage == 2)
-      {
-        displayHour(hour);
-        displayDigits(minute, 2); 
-        displayAMPM(hour);
-        displayDigits(710, 4);//display bell/alarm icon           
-  
-        if (secondButtonState == HIGH) {
-          if(minute<60){
-            minute=minute+1;
-          }
-        }  
-        else if (thirdButtonState == HIGH) {
-          if(minute > 0){
-            minute=minute-1;
-          }
-        }
-        else if (firstButtonState == HIGH) {
-          setupStage=3;
-        }        
-        else{
-          blinkDigits(minute, 2);
-        }             
-      }
-      else if(setupStage == 3)
-      {
-        displayHour(hour);
-        displayDigits(minute, 2); 
-        displayAMPM(hour);
-        displayDigits(700, 4);//display bell/alarm icon           
-        
-        if (secondButtonState == HIGH) {
-          if(hour<24){
-            hour=hour+1;
-          }
-        }  
-        else if (thirdButtonState == HIGH) {
-          if(hour > 0){
-            hour=hour-1;
-          }
-        }
-        else if (firstButtonState == HIGH) {
-          setupStage=4;
-        }         
-        else{
-          blinkDigits(hour, 1);
-        }            
-      }
-      else if(setupStage == 4)
-      {
-        displayHour(hour);
-        displayDigits(minute, 2); 
-        displayAMPM(hour);
-        displayDigits(700, 4);//display bell/alarm icon           
-  
-        if (secondButtonState == HIGH) {
-          if(minute<60){
-            minute=minute+1;
-          }
-        }  
-        else if (thirdButtonState == HIGH) {
-          if(minute > 0){
-            minute=minute-1;
-          }
-        }
-        else if (firstButtonState == HIGH) {
-          setupStage=5;
-          break;
-        }        
-        else{
-          blinkDigits(minute, 2);
-        }        
-      }        
-      
+    if(clockMode == 1)
+    {              
+        displayHour(cHour);
+        displayDigits(cMinute, 2); 
+        displayAMPM(cHour);
+        displayDigits(710, 4);//display bell/alarm icon    
+        blinkDigits(cHour, 1);                                
     }
-
+    else if(clockMode == 2)
+    {
+        displayHour(cHour);
+        displayDigits(cMinute, 2); 
+        displayAMPM(cHour);
+        displayDigits(710, 4);//display bell/alarm icon           
+        blinkDigits(cMinute, 2);            
+    }
+    else if(clockMode == 3)
+    {
+        displayHour(alarmHour);
+        displayDigits(alarmMinute, 2); 
+        displayAMPM(alarmHour);
+        displayDigits(700, 4);//display bell/alarm icon
+        blinkDigits(alarmHour, 2);                      
+    }
+    else if(clockMode == 4)
+    {
+        displayHour(alarmHour);
+        displayDigits(alarmMinute, 2); 
+        displayAMPM(alarmHour);
+        displayDigits(700, 4);//display bell/alarm icon 
+        blinkDigits(alarmMinute, 2);
+    }            
   }
-  
 }
 
 void blinkDigits(int digits, int pos){
