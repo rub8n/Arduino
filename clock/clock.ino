@@ -31,7 +31,7 @@ int currentInvader = 1;
 int firstButtonState = 0;
 int secondButtonState = 0;
 int thirdButtonState = 0;
-int sec = 0;
+float sec = 0;
 
 // Store bitmaps
 static const uint8_t PROGMEM
@@ -1487,12 +1487,15 @@ void loop()
     displayTemp();
   }
   else if (thirdButtonState == HIGH) {
-    Serial.println("Third button");   
-    shootInvader();
+    Serial.println("Third button");
+    //shootInvader();
+    toggleAlarm();
   }
   else {
     displayTime();
   }
+  
+  delay(200);
 
 }
 
@@ -1622,10 +1625,8 @@ void displayTime() {
 
   // Display invader
   //displayInvader(currentInvader, now.second());
-  sec = sec + 1;
+  sec = sec + .2;
   displayInvader(currentInvader, sec);
-
-  delay(1000);
 }
 
 void enterSetup() {
@@ -2166,7 +2167,7 @@ int cycleInvader (int i)
 }
 
 
-void displayInvader (int i, int s)
+void displayInvader (int i, float s)
 {
   matrix3.clear();
   matrix4.clear();
