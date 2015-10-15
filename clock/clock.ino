@@ -16,6 +16,7 @@ const int firstButtonPin = 21;
 const int secondButtonPin = 20;
 const int thirdButtonPin = 19;
 const int speakerPin = 9;
+const int buttonsLEDPin = 10;
 
 // Define temprature settings
 #define DHTPIN 4
@@ -1381,16 +1382,15 @@ void setup()
   matrix2.setRotation(1);
   matrix3.setRotation(1);
   matrix4.setRotation(1);
-
-  matrix1.setBrightness(5);
-  matrix2.setBrightness(5);
-  matrix3.setBrightness(5);
-  matrix4.setBrightness(5);
+  
+  //0:off - 1:low - 2:med - 3:high
+  setLightIntensity(2);
 
   // Setup buttons
   pinMode(firstButtonPin, INPUT);
   pinMode(secondButtonPin, INPUT);
   pinMode(thirdButtonPin, INPUT);
+  digitalWrite(firstButtonPin, HIGH);
   digitalWrite(secondButtonPin, HIGH);
   digitalWrite(thirdButtonPin, HIGH);
 
@@ -1419,6 +1419,40 @@ void loop()
     displayTime();
   }
 
+}
+
+void setLightIntensity(int p){
+  int matrixLEDs = 0;
+  switch (p)
+  {
+    case 0:
+      //turn leds off
+      analogWrite(buttonsLEDPin,10);
+      matrixLEDs = 0;
+      break;
+    case 1:
+      //turn leds min
+      analogWrite(buttonsLEDPin,8;
+      matrixLEDs = 2;
+      break;
+    case 2:
+      //turn leds med
+      analogWrite(buttonsLEDPin,5);
+      matrixLEDs = 5;
+      break;
+    case 3:
+      //turn leds high
+      analogWrite(buttonsLEDPin,0);
+      matrixLEDs = 10;
+      break;
+    default:
+      break;                    
+    }
+    matrix1.setBrightness(matrixLEDs);
+    matrix2.setBrightness(matrixLEDs);
+    matrix3.setBrightness(matrixLEDs);
+    matrix4.setBrightness(matrixLEDs);
+    matrixLEDs = null;
 }
 
 void displayTime() {
