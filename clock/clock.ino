@@ -16,7 +16,7 @@ const int firstButtonPin = A0;
 const int secondButtonPin = A2;
 const int thirdButtonPin = A1;
 const int speakerPin = 9;
-const int buttonsLedPin = 10;
+const int buttonsLEDPin = 10;
 
 // Define temprature settings
 #define DHTPIN 4
@@ -1445,23 +1445,19 @@ void setup()
   }
 
   // Setup display
-  matrix1.setRotation(3);
-  matrix2.setRotation(3);
-  matrix3.setRotation(3);
-  matrix4.setRotation(3);
-
-  matrix1.setBrightness(5);
-  matrix2.setBrightness(5);
-  matrix3.setBrightness(5);
-  matrix4.setBrightness(5);
+  matrix1.setRotation(1);
+  matrix2.setRotation(1);
+  matrix3.setRotation(1);
+  matrix4.setRotation(1);
+  
+  //0:off - 1:low - 2:med - 3:high
+  setLightIntensity(2);
 
   // Setup buttons
-  pinMode(buttonsLedPin, OUTPUT);
   pinMode(firstButtonPin, INPUT);
   pinMode(secondButtonPin, INPUT);
   pinMode(thirdButtonPin, INPUT);
-  analogWrite(buttonsLedPin, 0);
-  digitalWrite(firstButtonPin, HIGH);  
+  digitalWrite(firstButtonPin, HIGH);
   digitalWrite(secondButtonPin, HIGH);
   digitalWrite(thirdButtonPin, HIGH);
 //  attachInterrupt(firstButtonPin, b1Press, FALLING);
@@ -1495,8 +1491,7 @@ void loop()
     shootInvader();
   }
   else {
-    displayTime
-    ();
+    displayTime();
   }
 
 }
@@ -1572,6 +1567,39 @@ void b3Press(){
   }  
 }
 
+void setLightIntensity(int p){
+  int matrixLEDs = 0;
+  switch (p)
+  {
+    case 0:
+      //turn leds off
+      analogWrite(buttonsLEDPin,10);
+      matrixLEDs = 0;
+      break;
+    case 1:
+      //turn leds min
+      analogWrite(buttonsLEDPin,8;
+      matrixLEDs = 2;
+      break;
+    case 2:
+      //turn leds med
+      analogWrite(buttonsLEDPin,5);
+      matrixLEDs = 5;
+      break;
+    case 3:
+      //turn leds high
+      analogWrite(buttonsLEDPin,0);
+      matrixLEDs = 10;
+      break;
+    default:
+      break;                    
+    }
+    matrix1.setBrightness(matrixLEDs);
+    matrix2.setBrightness(matrixLEDs);
+    matrix3.setBrightness(matrixLEDs);
+    matrix4.setBrightness(matrixLEDs);
+    matrixLEDs = null;
+}
 
 void displayTime() {
 
