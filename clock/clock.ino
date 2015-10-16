@@ -1,3 +1,4 @@
+#include <math.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <Adafruit_LEDBackpack.h>
@@ -1422,6 +1423,7 @@ int cMinute=0;
 int alarmHour = 7;
 int alarmMinute = 30;
 int alarmMode = 1; //1 enabled only once, 7 enabled everyday
+bool alarmOn = false;
 
 void setup()
 {
@@ -1445,13 +1447,13 @@ void setup()
   }
 
   // Setup display
-  matrix1.setRotation(1);
-  matrix2.setRotation(1);
-  matrix3.setRotation(1);
-  matrix4.setRotation(1);
+  matrix1.setRotation(3);
+  matrix2.setRotation(3);
+  matrix3.setRotation(3);
+  matrix4.setRotation(3);
   
   //0:off - 1:low - 2:med - 3:high
-  setLightIntensity(2);
+  setLightIntensity(1);
 
   // Setup buttons
   pinMode(firstButtonPin, INPUT);
@@ -1462,7 +1464,8 @@ void setup()
   digitalWrite(thirdButtonPin, HIGH);
 //  attachInterrupt(firstButtonPin, b1Press, FALLING);
 //  attachInterrupt(secondButtonPin, b2Press, FALLING);
-//  attachInterrupt(thirdButtonPin, b3Press, FALLING);  
+//  attachInterrupt(thirdButtonPin, b3Press, FALLING);
+  //analogWrite(buttonsLEDPin,0);  
 
   // Setup speaker
   pinMode(speakerPin, OUTPUT);
@@ -1488,8 +1491,8 @@ void loop()
   }
   else if (thirdButtonState == HIGH) {
     Serial.println("Third button");
-    //shootInvader();
-    toggleAlarm();
+    shootInvader();
+    alarmOn = !alarmOn;
   }
   else {
     displayTime();
@@ -1576,17 +1579,17 @@ void setLightIntensity(int p){
   {
     case 0:
       //turn leds off
-      analogWrite(buttonsLEDPin,10);
+      analogWrite(buttonsLEDPin,255);
       matrixLEDs = 0;
       break;
     case 1:
       //turn leds min
-      analogWrite(buttonsLEDPin,8;
+      analogWrite(buttonsLEDPin,150);
       matrixLEDs = 2;
       break;
     case 2:
       //turn leds med
-      analogWrite(buttonsLEDPin,5);
+      analogWrite(buttonsLEDPin,75);
       matrixLEDs = 5;
       break;
     case 3:
@@ -1601,7 +1604,6 @@ void setLightIntensity(int p){
     matrix2.setBrightness(matrixLEDs);
     matrix3.setBrightness(matrixLEDs);
     matrix4.setBrightness(matrixLEDs);
-    matrixLEDs = null;
 }
 
 void displayTime() {
@@ -2173,7 +2175,7 @@ void displayInvader (int i, float s)
   matrix4.clear();
 
   // Animate invader
-  if ((s % 2) == 0)
+  if (( int(floor(s)) % 2) == 0)
   {
     switch (i)
     {
