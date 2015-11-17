@@ -1464,8 +1464,7 @@ void setup()
   digitalWrite(thirdButtonPin, HIGH);
 //  attachInterrupt(firstButtonPin, b1Press, FALLING);
 //  attachInterrupt(secondButtonPin, b2Press, FALLING);
-//  attachInterrupt(thirdButtonPin, b3Press, FALLING);
-  //analogWrite(buttonsLEDPin,0);  
+//  attachInterrupt(thirdButtonPin, b3Press, FALLING); 
 
   // Setup speaker
   pinMode(speakerPin, OUTPUT);
@@ -1575,26 +1574,27 @@ void b3Press(){
 
 void setLightIntensity(int p){
   int matrixLEDs = 0;
+  analogWrite(buttonsLEDPin,0);
   switch (p)
   {
     case 0:
       //turn leds off
-      analogWrite(buttonsLEDPin,255);
+      //analogWrite(buttonsLEDPin,255);
       matrixLEDs = 0;
       break;
     case 1:
       //turn leds min
-      analogWrite(buttonsLEDPin,150);
+      ///analogWrite(buttonsLEDPin,150);
       matrixLEDs = 2;
       break;
     case 2:
       //turn leds med
-      analogWrite(buttonsLEDPin,75);
+      //analogWrite(buttonsLEDPin,75);
       matrixLEDs = 5;
       break;
     case 3:
       //turn leds high
-      analogWrite(buttonsLEDPin,0);
+      //analogWrite(buttonsLEDPin,0);
       matrixLEDs = 10;
       break;
     default:
