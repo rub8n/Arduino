@@ -1501,7 +1501,7 @@ void loop()
 
 }
 
-void b1Press(){
+void b1Pressed(){
   //0 normal clock operation
   //1 time hour setup
   //2 time minute setup
@@ -1518,7 +1518,7 @@ void b1Press(){
   }
 }
 
-void b2Press(){
+void b2Pressed(){
   Serial.println("b2 pressed...");
   if(clockMode==0){
     displayTemp();
@@ -1545,7 +1545,7 @@ void b2Press(){
   }  
 }
 
-void b3Press(){
+void b3Pressed(){
   Serial.println("b3 pressed...");
   if(clockMode==0){
     shootInvader();
@@ -1677,16 +1677,46 @@ void enterSetup() {
 void blinkDigits(int digits, int pos){
   if(pos == 1){
     displayDigits(888, 1);
-    delay(500);
-    displayHour(digits);    
-    delay(500);
+    delayX5AndCheckInputs(100); 
+    displayHour(digits);
+    delayX5AndCheckInputs(100);     
   }else{
     displayDigits(888, pos);
-    delay(500);
+    delayX5AndCheckInputs(100); 
     displayDigits(digits, pos);
-    delay(500);
+    delayX5AndCheckInputs(100);
   }
 
+}
+
+void delayX5AndCheckButtonsInput(int delay){
+  delay(delay);
+  checkButtonsInput();
+  delay(delay);
+  checkButtonsInput();
+  delay(delay);
+  checkButtonsInput();
+  delay(delay);
+  checkButtonsInput();
+  delay(delay);
+}
+
+void checkButtonsInput(){
+  
+  firstButtonState = digitalRead(firstButtonPin);
+  secondButtonState = digitalRead(secondButtonPin);
+  thirdButtonState = digitalRead(thirdButtonPin);
+  
+  if (firstButtonState == HIGH) {
+    b1pressed();   
+  }
+  else if (secondButtonState == HIGH) {
+    b2Pressed();
+  }
+  else if (thirdButtonState == HIGH) {
+    b3Pressed();
+  }
+    
 }
 
 void displayAMPM(int h){ 
