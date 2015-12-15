@@ -21,7 +21,7 @@ const int buttonsLEDPin = 10;
 
 // Define temprature settings
 #define DHTPIN 4
-#define DHTTYPE DHT11
+#define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Declare global variables
@@ -1445,6 +1445,9 @@ void setup()
     // This sets the RTC to the date and time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
+  
+  cHour = rtc.now().hour();
+  cMinute = rtc.now().minute();
 
   // Setup display
   matrix1.setRotation(3);
@@ -1482,6 +1485,7 @@ void loop()
 
   if (firstButtonState == HIGH) {
     Serial.println("First button");
+    clockMode=1;
     enterSetup();
   }
   else if (secondButtonState == HIGH) {
@@ -1524,22 +1528,22 @@ void b2Pressed(){
     displayTemp();
   }
   else if(clockMode==1){
-    if(cHour<24){
+    if(cHour<23){
       cHour++;
     }  
   }
   else if(clockMode==2){
-    if(cMinute<24){
+    if(cMinute<59){
       cMinute++;
     } 
   }
   else if(clockMode==3){
-    if(alarmHour<24){
+    if(alarmHour<23){
       alarmHour++;
     } 
   }
   else if(clockMode==4){
-    if(alarmMinute<24){
+    if(alarmMinute<59){
       alarmMinute++;
     }
   }  
@@ -1551,22 +1555,22 @@ void b3Pressed(){
     shootInvader();
   }
   else if(clockMode==1){
-    if(cHour > 0){
+    if(cHour >= 0){
       cHour--;
     }   
   }
   else if(clockMode==2){
-    if(cMinute > 0){
+    if(cMinute >= 0){
       cMinute--;
     }  
   }
   else if(clockMode==3){
-    if(alarmHour > 0){
+    if(alarmHour >= 0){
       alarmHour--;
     }  
   }
   else if(clockMode==4){
-    if(alarmMinute > 0){
+    if(alarmMinute >= 0){
       alarmMinute--;
     } 
   }  
@@ -1614,12 +1618,9 @@ void displayTime() {
   if (firstButtonState == HIGH)
     shootInvader();
 
-  // Update time
-  now = rtc.now();
-
   // Display time
-  displayHour(now.hour());
-  displayDigits(now.minute(), 2);
+  displayHour(cHour);
+  displayDigits(cMinute, 2);
 
   // Update invader every hour
   if (now.minute() == 0 && now.second() == 0)
@@ -1636,11 +1637,15 @@ void enterSetup() {
   cHour = rtc.now().hour();
   cMinute = rtc.now().minute();
 
-  while(clockMode > 0 && clockMode <=4)
+  Serial.print("On setup clockmode=");
+  Serial.println(clockMode);
+
+  while(clockMode > 0 && clockMode <= 4)
   {
   
     if(clockMode == 1)
-    {              
+    {
+        Serial.println("Clock mode 1...");
         displayHour(cHour);
         displayDigits(cMinute, 2); 
         displayAMPM(cHour);
@@ -1649,6 +1654,7 @@ void enterSetup() {
     }
     else if(clockMode == 2)
     {
+        Serial.println("Setup: Clock mode 2...");
         displayHour(cHour);
         displayDigits(cMinute, 2); 
         displayAMPM(cHour);
@@ -1657,14 +1663,16 @@ void enterSetup() {
     }
     else if(clockMode == 3)
     {
+        Serial.println("Setup: Clock mode 3...");
         displayHour(alarmHour);
         displayDigits(alarmMinute, 2); 
         displayAMPM(alarmHour);
         displayDigits(700, 4);//display bell/alarm icon
-        blinkDigits(alarmHour, 2);                      
+        blinkDigits(alarmHour, 1);                      
     }
     else if(clockMode == 4)
     {
+        Serial.println("Setup: Clock mode 4...");
         displayHour(alarmHour);
         displayDigits(alarmMinute, 2); 
         displayAMPM(alarmHour);
@@ -1677,28 +1685,25 @@ void enterSetup() {
 void blinkDigits(int digits, int pos){
   if(pos == 1){
     displayDigits(888, 1);
-    delayX5AndCheckInputs(100); 
+    delayX4AndCheckInputs(100); 
     displayHour(digits);
-    delayX5AndCheckInputs(100);     
+    delayX4AndCheckInputs(100);     
   }else{
     displayDigits(888, pos);
-    delayX5AndCheckInputs(100); 
+    delayX4AndCheckInputs(100); 
     displayDigits(digits, pos);
-    delayX5AndCheckInputs(100);
+    delayX4AndCheckInputs(100);
   }
 
 }
 
-void delayX5AndCheckButtonsInput(int delay){
-  delay(delay);
+void delayX4AndCheckInputs(int timeDelay){
+  delay(timeDelay);
+  delay(timeDelay);
   checkButtonsInput();
-  delay(delay);
+  delay(timeDelay);
+  delay(timeDelay);
   checkButtonsInput();
-  delay(delay);
-  checkButtonsInput();
-  delay(delay);
-  checkButtonsInput();
-  delay(delay);
 }
 
 void checkButtonsInput(){
@@ -1708,7 +1713,7 @@ void checkButtonsInput(){
   thirdButtonState = digitalRead(thirdButtonPin);
   
   if (firstButtonState == HIGH) {
-    b1pressed();   
+    b1Pressed();   
   }
   else if (secondButtonState == HIGH) {
     b2Pressed();
