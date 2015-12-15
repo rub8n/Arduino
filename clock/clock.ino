@@ -1481,7 +1481,9 @@ void loop()
   // Check for button press
   firstButtonState = digitalRead(firstButtonPin);
   secondButtonState = digitalRead(secondButtonPin);
-  thirdButtonState = digitalRead(thirdButtonPin);  
+  thirdButtonState = digitalRead(thirdButtonPin);
+
+  checkAlarm();
 
   if (firstButtonState == HIGH) {
     Serial.println("First button");
@@ -1503,6 +1505,10 @@ void loop()
   
   delay(200);
 
+}
+
+void checkAlarm(){
+  Serial.println("Sound alarm!");
 }
 
 void b1Pressed(){
@@ -1642,6 +1648,8 @@ void enterSetup() {
 
   while(clockMode > 0 && clockMode <= 4)
   {
+
+    checkAlarm();
   
     if(clockMode == 1)
     {
